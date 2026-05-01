@@ -1,0 +1,136 @@
+body{
+    background-color: #1ec999;
+    margin: 0;
+    padding: 0;
+}
+
+/*Seccion navar*/
+.nav{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background-color: #075e54;
+    height: 6rem;
+}
+
+.nav a{
+    color: white;
+    text-decoration: none;
+    margin-left: 2rem;
+    font-size: 3rem;
+    font-family: 'Roboto', sans-serif;
+    gap:10px;
+}
+
+#main_content{
+    display:flex
+}
+
+#welcome, #sample{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+    flex-wrap: wrap;
+    font-size: 35px;
+    color: black;
+    font-family: 'Rockwell', serif;
+    padding: 58px;
+}
+
+.list_whats{
+    list-style-type: none;
+}
+
+.list_whats li{
+    position: relative;
+    padding-left:2.5rem;
+    margin-bottom: 1rem;
+}
+
+.list_whats li::before{
+    font-family: "bootstrap-icons";
+    position: absolute;
+    left:0;
+    top:0;
+    font-size:35px;
+}
+/* Diseño de listas de como usar programa*/
+#steps li:nth-child(1)::before {
+  content: "\F268"; 
+}
+
+#steps li:nth-child(2)::before{
+    content: "\F3BF";
+}
+
+#steps li:nth-child(3)::before {
+  content: "\F766"; 
+}
+
+#steps li:nth-child(4)::before{
+    content: "\F2D6";
+}
+
+/*Diseño de listas de datos entregados*/
+#funcionality li:nth-child(1)::before {
+  content: "\F4E1"; 
+}
+
+#funcionality li:nth-child(2)::before{
+    content: "\F7A6";
+}
+
+#funcionality li:nth-child(3)::before {
+  content: "\F293"; 
+}
+
+#funcionality li:nth-child(4)::before{
+    content: "\F1F6";
+}
+
+#funcionality li:nth-child(5)::before{
+    content: "\F2C1";
+}
+
+/*Seccion subir*/
+#uploadSection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 25rem;
+    height: 16.25rem;
+    margin-top:5px;
+    padding: 5px;
+    background-color: #a9fce4c4;
+}
+
+#upload{
+    border: dashed 2px #81c0aee1;
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#fileInput{
+    display: none;
+}
+
+#fileInfo{
+    text-align: center;
+    align-items: center;
+    font-size: 2em;
+}
+
+
+#upload.dragging {
+  border-color: #0d7a50;
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.02);
+}
+
+#upload.archivo-seleccionado {
+  border-style: solid;
+  background: rgba(255,255,255,0.9);
+}
