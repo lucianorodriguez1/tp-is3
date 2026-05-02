@@ -11,6 +11,9 @@ body{
     align-items: center;
     background-color: #075e54;
     height: 6rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .nav a{
