@@ -1,179 +1,219 @@
-const fileInput = document.getElementById('fileInput');
-const fileInfo = document.getElementById('fileInfo');
-const label = document.getElementById('upload');
-const CHAT_STORAGE_KEY = 'whatsup-chat-text';
+const entradaArchivo = document.getElementById('fileInput');
+const infoArchivo = document.getElementById('fileInfo');
+const zonaCarga = document.getElementById('upload');
+const botonAnalizar = document.getElementById('analyzeButton');
+const CLAVE_ALMACENAMIENTO_CHAT = 'whatsup-chat-data';
 
-function mostrarErrorFormato(message) {
-  fileInfo.innerHTML = `
+function mostrarErrorFormato(mensaje) {
+  infoArchivo.innerHTML = `
     <i class="bi bi-x-circle" style="color: red;"></i>
-    <div><span>${message}</span></div>
+    <div><span>${mensaje}</span></div>
   `;
-  label.classList.remove('archivo-seleccionado');
-  sessionStorage.removeItem(CHAT_STORAGE_KEY);
+  zonaCarga.classList.remove('archivo-seleccionado');
+  botonAnalizar.disabled = true;
+  sessionStorage.removeItem(CLAVE_ALMACENAMIENTO_CHAT);
 }
 
-function mostrarArchivoValido(file) {
-  fileInfo.innerHTML = `
+function mostrarArchivoValido(archivo) {
+  infoArchivo.innerHTML = `
     <i class="bi bi-file-text" style="color: green;"></i>
     <div>
-      <span><strong>${file.name}</strong></span>
-      <span style="font-size: 0.8em; color: gray;">${(file.size / 1024).toFixed(1)} KB</span>
+      <span><strong>${archivo.name}</strong></span>
+      <span style="font-size: 0.8em; color: gray;">${(archivo.size / 1024).toFixed(1)} KB</span>
     </div>
   `;
-  label.classList.add('archivo-seleccionado');
+  zonaCarga.classList.add('archivo-seleccionado');
+  botonAnalizar.disabled = false;
 }
 
-function validarFechaHora(dateText, timeText, meridiemText) {
-  const [dayText, monthText, yearText] = dateText.split('/');
-  const [hourText, minuteText] = timeText.split(':');
+function parsearFechaHoraChat(textoFecha, textoHora, textoMeridiem) {
+  const [textoDia, textoMes, textoAnio] = textoFecha.split('/');
+  const [textoHoraNumero, textoMinuto] = textoHora.split(':');
 
-  const day = Number(dayText);
-  const month = Number(monthText);
-  const rawYear = Number(yearText);
-  const year = rawYear < 100 ? 2000 + rawYear : rawYear;
-  const minutes = Number(minuteText);
-  let hours = Number(hourText);
+  const dia = Number(textoDia);
+  const mes = Number(textoMes);
+  const anioCrudo = Number(textoAnio);
+  const anio = anioCrudo < 100 ? 2000 + anioCrudo : anioCrudo;
+  const minutos = Number(textoMinuto);
+  let horas = Number(textoHoraNumero);
 
   if (
-    !Number.isInteger(day) ||
-    !Number.isInteger(month) ||
-    !Number.isInteger(year) ||
-    !Number.isInteger(hours) ||
-    !Number.isInteger(minutes)
+    !Number.isInteger(dia) ||
+    !Number.isInteger(mes) ||
+    !Number.isInteger(anio) ||
+    !Number.isInteger(horas) ||
+    !Number.isInteger(minutos)
   ) {
-    return false;
+    throw new Error('Fecha invalida en el chat.');
   }
 
-  const normalizedMeridiem = meridiemText.toLowerCase().replace(/\./g, '').replace(/\s/g, '');
+  const meridiemNormalizado = textoMeridiem.toLowerCase().replace(/\./g, '').replace(/\s/g, '');
 
-  if (normalizedMeridiem) {
-    if (hours < 1 || hours > 12) {
-      return false;
+  if (meridiemNormalizado) {
+    if (horas < 1 || horas > 12) {
+      throw new Error('Fecha invalida en el chat.');
     }
 
-    if (normalizedMeridiem === 'pm' && hours < 12) {
-      hours += 12;
-    } else if (normalizedMeridiem === 'am' && hours === 12) {
-      hours = 0;
-    } else if (normalizedMeridiem !== 'am' && normalizedMeridiem !== 'pm') {
-      return false;
+    if (meridiemNormalizado === 'pm' && horas < 12) {
+      horas += 12;
+    } else if (meridiemNormalizado === 'am' && horas === 12) {
+      horas = 0;
+    } else if (meridiemNormalizado !== 'am' && meridiemNormalizado !== 'pm') {
+      throw new Error('Fecha invalida en el chat.');
     }
-  } else if (hours < 0 || hours > 23) {
-    return false;
+  } else if (horas < 0 || horas > 23) {
+    throw new Error('Fecha invalida en el chat.');
   }
 
-  if (month < 1 || month > 12 || minutes < 0 || minutes > 59) {
-    return false;
+  if (mes < 1 || mes > 12 || minutos < 0 || minutos > 59) {
+    throw new Error('Fecha invalida en el chat.');
   }
 
-  const date = new Date(year, month - 1, day, hours, minutes);
+  const fecha = new Date(anio, mes - 1, dia, horas, minutos);
 
-  return (
-    !Number.isNaN(date.getTime()) &&
-    date.getFullYear() === year &&
-    date.getMonth() === month - 1 &&
-    date.getDate() === day &&
-    date.getHours() === hours &&
-    date.getMinutes() === minutes
-  );
+  if (
+    Number.isNaN(fecha.getTime()) ||
+    fecha.getFullYear() !== anio ||
+    fecha.getMonth() !== mes - 1 ||
+    fecha.getDate() !== dia ||
+    fecha.getHours() !== horas ||
+    fecha.getMinutes() !== minutos
+  ) {
+    throw new Error('Fecha invalida en el chat.');
+  }
+
+  return fecha;
 }
 
-function validarFormatoWhatsApp(content) {
-  const normalizedContent = content.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
-  const lines = normalizedContent.split('\n');
-  const startPattern = /^(?:\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})(?:\s([apAP]\.?\s?m\.?))?\]\s|(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})(?:\s([apAP]\.?\s?m\.?))?\s-\s)([^:]+):\s([\s\S]*)$/;
+function parsearChatWhatsApp(contenido) {
+  const contenidoNormalizado = contenido.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
+  const lineas = contenidoNormalizado.split('\n');
+  const mensajes = [];
+  const patronMarcaTiempo = /^(?:\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})(?:\s([apAP]\.?\s?m\.?))?\]\s|(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})(?:\s([apAP]\.?\s?m\.?))?\s-\s)([\s\S]*)$/;
+  const patronMensajeConAutor = /^([^:]+):\s([\s\S]*)$/;
 
-  let foundMessage = false;
-  let currentMessageOpen = false;
+  let mensajeActual = null;
 
-  for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
+  for (const lineaCruda of lineas) {
+    const linea = lineaCruda.trimEnd();
 
-    if (!line.trim()) {
+    if (!linea.trim()) {
+      if (mensajeActual) {
+        mensajeActual.text += '\n';
+      }
       continue;
     }
 
-    const match = line.match(startPattern);
+    const coincidencia = linea.match(patronMarcaTiempo);
 
-    if (match) {
-      const dateText = match[1] || match[4];
-      const timeText = match[2] || match[5];
-      const meridiemText = (match[3] || match[6] || '').trim();
-      const author = match[7].trim();
+    if (coincidencia) {
+      const textoFecha = coincidencia[1] || coincidencia[4];
+      const textoHora = coincidencia[2] || coincidencia[5];
+      const textoMeridiem = (coincidencia[3] || coincidencia[6] || '').trim();
+      const contenidoMensaje = coincidencia[7].trim();
 
-      if (!author || !validarFechaHora(dateText, timeText, meridiemText)) {
-        return false;
+      if (mensajeActual) {
+        mensajes.push(mensajeActual);
       }
 
-      foundMessage = true;
-      currentMessageOpen = true;
+      const coincidenciaMensajeConAutor = contenidoMensaje.match(patronMensajeConAutor);
+
+      if (!coincidenciaMensajeConAutor) {
+        parsearFechaHoraChat(textoFecha, textoHora, textoMeridiem);
+        mensajeActual = null;
+        continue;
+      }
+
+      const autor = coincidenciaMensajeConAutor[1].trim();
+      const texto = coincidenciaMensajeConAutor[2].trim();
+
+      if (!autor) {
+        throw new Error('No se pudo reconocer el formato del chat.');
+      }
+
+      mensajeActual = {
+        datetime: parsearFechaHoraChat(textoFecha, textoHora, textoMeridiem).toISOString(),
+        author: autor,
+        text: texto,
+      };
       continue;
     }
 
-    if (!currentMessageOpen) {
-      return false;
+    if (!mensajeActual) {
+      throw new Error('No se pudo reconocer el formato del chat.');
     }
+
+    mensajeActual.text += `\n${linea}`;
   }
 
-  return foundMessage;
+  if (mensajeActual) {
+    mensajes.push(mensajeActual);
+  }
+
+  if (!mensajes.length) {
+    throw new Error('No se pudo reconocer el formato del chat.');
+  }
+
+  return mensajes;
 }
 
-function leerArchivoComoTexto(file) {
+function leerArchivoComoTexto(archivo) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const lector = new FileReader();
 
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
+    lector.onload = () => resolve(lector.result);
+    lector.onerror = () => reject(new Error('No se pudo leer el archivo.'));
 
-    reader.readAsText(file, 'utf-8');
+    lector.readAsText(archivo, 'utf-8');
   });
 }
 
-async function procesarArchivo(file) {
-  if (!file) {
+async function procesarArchivo(archivo) {
+  if (!archivo) {
     return;
   }
 
-  if (!file.name.toLowerCase().endsWith('.txt')) {
+  if (!archivo.name.toLowerCase().endsWith('.txt')) {
     mostrarErrorFormato('Solo se aceptan archivos <strong>.txt</strong>');
     return;
   }
 
-  fileInfo.innerHTML = `
+  infoArchivo.innerHTML = `
     <i class="bi bi-hourglass-split" style="color: #075e54;"></i>
     <div><span>Procesando archivo...</span></div>
   `;
 
   try {
-    const content = await leerArchivoComoTexto(file);
-
-    if (!validarFormatoWhatsApp(content)) {
-      mostrarErrorFormato('El archivo no tiene un formato valido de chat de WhatsApp.');
-      return;
-    }
-
-    sessionStorage.setItem(CHAT_STORAGE_KEY, content);
-    mostrarArchivoValido(file);
+    const contenido = await leerArchivoComoTexto(archivo);
+    const mensajesParseados = parsearChatWhatsApp(contenido);
+    sessionStorage.setItem(CLAVE_ALMACENAMIENTO_CHAT, JSON.stringify(mensajesParseados));
+    mostrarArchivoValido(archivo);
   } catch (error) {
-    mostrarErrorFormato('No se pudo leer el archivo.');
+    mostrarErrorFormato('El archivo no tiene un formato valido de chat de WhatsApp.');
   }
 }
 
-fileInput.addEventListener('change', () => {
-  procesarArchivo(fileInput.files[0]);
+entradaArchivo.addEventListener('change', () => {
+  procesarArchivo(entradaArchivo.files[0]);
 });
 
-label.addEventListener('dragover', (event) => {
-  event.preventDefault();
-  label.classList.add('dragging');
+zonaCarga.addEventListener('dragover', (evento) => {
+  evento.preventDefault();
+  zonaCarga.classList.add('dragging');
 });
 
-label.addEventListener('dragleave', () => {
-  label.classList.remove('dragging');
+zonaCarga.addEventListener('dragleave', () => {
+  zonaCarga.classList.remove('dragging');
 });
 
-label.addEventListener('drop', (event) => {
-  event.preventDefault();
-  label.classList.remove('dragging');
-  procesarArchivo(event.dataTransfer.files[0]);
+zonaCarga.addEventListener('drop', (evento) => {
+  evento.preventDefault();
+  zonaCarga.classList.remove('dragging');
+  procesarArchivo(evento.dataTransfer.files[0]);
+});
+
+botonAnalizar.addEventListener('click', () => {
+  if (sessionStorage.getItem(CLAVE_ALMACENAMIENTO_CHAT)) {
+    window.location.href = 'analisis.html';
+  }
 });

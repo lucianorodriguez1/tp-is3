@@ -27,16 +27,19 @@
                 <p>Obtenga <strong>estadisticas</strong> y <strong>graficos</strong> sobre su actividad de mensajeria</p>
                 
                 <!--Recuadro para subir el archivo .txt para posterior procesamiento-->
-                <div id="uploadSection">    
-                    <label id="upload">
-                        <input type="file" id="fileInput" accept=".txt">
-                        <div id="fileInfo">
-                            <i class="bi bi-upload"></i>
-                            <div>
-                                <span><strong>Arrastre</strong> o <strong>seleccione</strong> su archivo .txt en este recuadro</span>
+                <div id="uploadArea">
+                    <div id="uploadSection">    
+                        <label id="upload">
+                            <input type="file" id="fileInput" accept=".txt">
+                            <div id="fileInfo">
+                                <i class="bi bi-upload"></i>
+                                <div>
+                                    <span><strong>Arrastre</strong> o <strong>seleccione</strong> su archivo .txt en este recuadro</span>
+                                </div>
                             </div>
-                        </div>
-                    </label>
+                        </label>
+                    </div>
+                    <button id="analyzeButton" type="button" disabled>Analizar chat</button>
                 </div>
             </div>
 
