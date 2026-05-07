@@ -18,7 +18,13 @@ function mostrarArchivoValido(archivo) {
   infoArchivo.innerHTML = `
     <i class="bi bi-file-text" style="color: green;"></i>
     <div>
-      <span><strong>${archivo.name}</strong></span>
+      <span style="display: block;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+                font-size: 1rem;"
+                ><strong>${archivo.name}</strong></span>
       <span style="font-size: 0.8em; color: gray;">${(archivo.size / 1024).toFixed(1)} KB</span>
     </div>
   `;

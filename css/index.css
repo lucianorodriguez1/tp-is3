@@ -35,7 +35,7 @@ body{
     height: 100%;
     width: 50%;
     flex-wrap: wrap;
-    font-size: 35px;
+    font-size: 1.25rem;
     color: black;
     font-family: 'Rockwell', serif;
     padding: 58px;
@@ -48,7 +48,7 @@ body{
 .list_whats li{
     position: relative;
     padding-left:2.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; 
 }
 
 .list_whats li::before{
@@ -56,8 +56,10 @@ body{
     position: absolute;
     left:0;
     top:0;
-    font-size:35px;
+    font-size:2rem;
 }
+
+
 /* Diseño de listas de como usar programa*/
 #steps li:nth-child(1)::before {
   content: "\F268"; 
@@ -103,9 +105,10 @@ body{
     align-items: center;
     flex-wrap: wrap;
     width: 25rem;
-    height: 16.25rem;
-    margin-top:5px;
-    padding: 5px;
+    height: 100%;
+    max-height: 16.25rem;
+    margin-top:0.2rem;
+    padding: 0.2rem;
     background-color: #a9fce4c4;
 }
 
@@ -130,7 +133,9 @@ body{
 #fileInfo{
     text-align: center;
     align-items: center;
-    font-size: 2em;
+    font-size: 2.5rem;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 
@@ -143,6 +148,7 @@ body{
 #upload.archivo-seleccionado {
   border-style: solid;
   background: rgba(255,255,255,0.9);
+  overflow: hidden;
 }
 
 #analyzeButton{
