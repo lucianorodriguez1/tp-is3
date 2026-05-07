@@ -11,6 +11,9 @@ body{
     align-items: center;
     background-color: #075e54;
     height: 6rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .nav a{
@@ -106,6 +109,13 @@ body{
     background-color: #a9fce4c4;
 }
 
+#uploadArea{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25.75rem;
+}
+
 #upload{
     border: dashed 2px #81c0aee1;
     padding: 10px 20px;
@@ -133,4 +143,28 @@ body{
 #upload.archivo-seleccionado {
   border-style: solid;
   background: rgba(255,255,255,0.9);
+}
+
+#analyzeButton{
+    margin-top: 1.5rem;
+    padding: 0.9rem 2rem;
+    border: none;
+    border-radius: 999px;
+    background-color: #075e54;
+    color: white;
+    font-size: 1.2rem;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    width: 100%;
+    max-width: 25.75rem;
+}
+
+#analyzeButton:hover:not(:disabled){
+    transform: translateY(-1px);
+}
+
+#analyzeButton:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
 }
