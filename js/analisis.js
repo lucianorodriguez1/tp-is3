@@ -22,6 +22,15 @@ if (!chatGuardado) {
   document.getElementById("personName").innerHTML =`<i class="bi bi-file-person"></i> ${topUser.author}`;
   document.getElementById("personMessages").innerHTML = `<i class="bi bi-chat-dots"></i> Mensajes enviados: ${topUser.count}`;
 
+  emojiMasUsado(mensajes).then((topEmoji) => {
+    if (!topEmoji) {
+      document.getElementById("emojiTotal").innerHTML = `<i class="bi bi-emoji-sunglasses"></i> No se encontraron emojis.`;
+      document.getElementById("emojiCount").innerHTML = "";
+    } else {
+      document.getElementById("emojiTotal").innerHTML = `<i class="bi bi-emoji-sunglasses"></i> Emoji mas usado: ${topEmoji.emoji}`;
+      document.getElementById("emojiCount").innerHTML = `<i class="bi bi-123"></i> Veces usado: ${topEmoji.count}`;
+    }
+  });
 }
 
 /*
