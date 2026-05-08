@@ -17,17 +17,11 @@ if (!chatGuardado) {
     window.location.href = "index.html";
   }
 
-  contadorMensajes.textContent = String(mensajes.length);
-
-  //despues de testear ELIMINAR
   const topUser = usuarioConMasMensajes(mensajes);
-  //despues de testear ELIMINAR
-  console.log("Usuario con más mensajes:", topUser);
 
-  //despues de testear ELIMINAR
-  emojiMasUsado(mensajes).then((topEmoji) => {
-    console.log("Emoji más usado:", topEmoji);
-  });
+  document.getElementById("personName").innerHTML =`<i class="bi bi-file-person"></i> ${topUser.author}`;
+  document.getElementById("personMessages").innerHTML = `<i class="bi bi-chat-dots"></i> Mensajes enviados: ${topUser.count}`;
+
 }
 
 /*
