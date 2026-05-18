@@ -13,8 +13,7 @@ La lógica principal se encuentra implementada en `JavaScript`. El procesamiento
 - Validación del formato del archivo exportado. 
 - Limpieza y separación de mensajes por fecha, autor y contenido. 
 - Manejo de mensajes multilínea. 
-- Generación de estadísticas a partir de los mensajes procesados. 
-- Normalización de nombres de usuario para evitar diferencias entre mayúsculas y minúsculas. 
+- Generación de estadísticas a partir de los mensajes procesados.
 - Visualización de errores durante la carga del archivo. 
 - Redirección automática a la pantalla principal cuando no existen datos cargados para analizar. 
 
@@ -105,15 +104,23 @@ El archivo debe ser un chat exportado de WhatsApp en formato `.txt`, por ejemplo
 
 ---
 
-## 📚 Decisiones técnicas
+## 📚 Decisiones técnicas tomadas
 
-- Procesamiento 100% en cliente (sin backend)
-- Lectura de archivos usando APIs del navegador (`FileReader`)
-- Parseo mediante expresiones regulares
-- Cálculo de métricas en memoria
-- Visualización dinámica con manipulación del DOM
+Durante el desarrollo del proyecto se tomaron distintas decisiones técnicas y de organización con el objetivo de simplificar el procesamiento del chat y mantener una estructura ordenada del sistema. 
 
----
+Una de las decisiones principales fue desarrollar la aplicación completamente del lado del cliente. Se optó por una arquitectura `frontend-only`, lo que permitió evitar dependencias con servidores externos y simplificar la ejecución desde el navegador. La lectura de archivos se implementó mediante la API `FileReader`, facilitando el procesamiento de archivos `.txt` directamente desde la aplicación sin necesidad de programas externos. 
+
+También se utilizó `sessionStorage` para almacenar temporalmente los mensajes procesados. De esta forma, los datos pueden compartirse entre páginas sin requerir bases de datos ni un backend adicional. 
+
+El archivo exportado de WhatsApp se procesa mediante expresiones regulares, permitiendo reconocer automáticamente fechas, horarios, autores y contenido de los mensajes. 
+
+Además, se decidió validar el formato del archivo para reducir errores durante el análisis. Si el archivo no cumple con el formato esperado, el sistema informa el problema al usuario e impide continuar con el procesamiento. 
+
+Para calcular el usuario con mayor cantidad de mensajes enviados se implementó una estructura basada en `Map`, permitiendo realizar el conteo de mensajes de manera eficiente. Asimismo, se normalizaron los nombres de usuario utilizando minúsculas para evitar diferencias por capitalización. 
+
+En el análisis de emojis se incorporó la librería `emoji-regex` importada desde `CDN`, ya que permite detectar emojis de forma más precisa que una expresión regular manual. También se normalizaron tonos de piel y variaciones visuales para evitar contabilizar un mismo emoji como elementos diferentes. 
+
+Por último, los resultados obtenidos se muestran dinámicamente en pantalla mediante la manipulación del contenido `HTML` utilizando `JavaScript`.
 
 ## 📁 Gestión del proyecto
 
