@@ -69,14 +69,6 @@ El sistema:
 
 ---
 
-## ⚙️ Tecnologías utilizadas
-
-- HTML
-- CSS
-- JavaScript
-
----
-
 ## ▶️ Cómo ejecutar el proyecto
 
 1. Clonar el repositorio:
@@ -86,21 +78,6 @@ git clone <URL_DEL_REPO>
 2. Abrir el archivo `index.html` en cualquier navegador moderno
 
 No requiere instalación, servidor ni dependencias externas.
-
----
-
-## 📄 Formato del archivo de entrada
-
-El archivo debe ser un chat exportado de WhatsApp en formato `.txt`, por ejemplo:
-
-[12/3/24, 14:32] Juan: Hola!\
-[12/3/24, 14:33] María: Todo bien?
-
-### Consideraciones
-
-- Se soporta el formato estándar de exportación
-- No se contemplan todos los formatos posibles
-- Mensajes multimedia pueden ser ignorados o filtrados
 
 ---
 
@@ -122,10 +99,49 @@ En el análisis de emojis se incorporó la librería `emoji-regex` importada des
 
 Por último, los resultados obtenidos se muestran dinámicamente en pantalla mediante la manipulación del contenido `HTML` utilizando `JavaScript`.
 
-## 📁 Gestión del proyecto
+---
 
-- Uso de repositorio Git para control de versiones
-- Commits descriptivos y atómicos
-- Separación clara entre:
-  - lógica (js)
-  - presentación (html/css)
+## 🏗️ Arquitectura del Sistema
+
+El sistema implementa una arquitectura **Frontend-only**, sin backend ni base de datos, estructurada en los siguientes módulos:
+
+- **Estructura de Archivos**:
+  - `index.html` / `analisis.html`: Vistas principales.
+  - `css/index.css` / `css/analisis.css`: Hojas de estilo dedicadas.
+  - `js/index.js`: Responsable de la lectura de archivos (File API), validación y el proceso de parseo del `.txt`.
+  - `js/analisis.js`: Responsable de recuperar los datos, ejecutar los algoritmos de análisis (estadísticas) y renderizar los resultados en el DOM.
+
+- **Flujo de Datos (Data Flow)**:
+  1. El archivo se carga vía el input de `index.html`.
+  2. `index.js` lee el contenido de texto mediante `FileReader`.
+  3. El motor de procesamiento transforma el texto plano en un arreglo de objetos JSON en memoria.
+  4. Los datos son serializados y almacenados en el navegador mediante `sessionStorage` (con la clave `whatsup-chat-data`).
+  5. Se dispara una redirección a `analisis.html`.
+  6. `analisis.js` recupera la cadena JSON del `sessionStorage`, regenera los objetos (conversión de fechas a instacias de `Date`), ejecuta cálculos y alimenta la interfaz gráfica.
+
+- **Modelo de Datos Interno**:
+  Cada mensaje procesado sigue la siguiente estructura de objeto:
+  ```json
+  {
+    "datetime": "2023-10-05T14:30:00.000Z",
+    "author": "Nombre del Usuario",
+    "text": "Contenido del mensaje"
+  }
+  ```
+
+---
+
+## 💻 Documentación del Código
+
+Los módulos de la aplicación están diseñados con funciones especializadas para la separación de responsabilidades:
+
+### Parseo del Archivo (`index.js`)
+- `parsearChatWhatsApp(contenido)`: Función principal del ciclo de lectura. Itera sobre las líneas del archivo aplicando múltiples Expresiones Regulares (`patronMarcaTiempo` y `patronMensajeConAutor`) para identificar remates de Timestamp, autores y contenido. Gestiona automáticamente los mensajes multilínea concatenando texto extra al mensaje anterior si no se detecta una nueva marca de fecha.
+- `parsearFechaHoraChat(...)`: Utilidad para convertir los distintos formatos de visualización (12 hs am/pm vs 24 hs, formatos de fecha variados) en un objeto de Date unificado de JavaScript. Verifica exhaustivamente la validez semántica de las fechas resultantes para descartar formatos no soportados.
+
+### Procesamiento y Estadísticas (`analisis.js`)
+- `usuarioConMasMensajes(mensajes)`: Itera el arreglo de mensajes alimentando un Hash Map (`Map`) que lleva la cuenta de frecuencia por usuario (`counts`). Internamente gestiona la diferencia de capitalización (se normaliza en minúscula para agrupar bajo la clave `key = raw.toLowerCase()`) pero mantiene el estado de capitalización original en `original.get(key)`. Retorna `{ author, count }`.
+- `emojiMasUsado(mensajes)`: 
+  - Utiliza `import()` dinámico para cargar la librería dependiente `emoji-regex/index.mjs` vía Unpkg CDN. Implementa a su vez un bloque `catch` con un fallback Regex hardcodeado por si falla el proveedor de red.
+  - El escaneo cuenta ocurrencias en un Map tras limpiar la codificación de la string: elimina los modificadores de tonos de piel (`[\u{1F3FB}-\u{1F3FF}]`) y los selectores ocultos de variación (`\uFE0F`) para asegurar un conteo íntegro del mismo caracter semántico independientemente de su variable visual. Retorna el objeto `{ emoji, count }`.
+
