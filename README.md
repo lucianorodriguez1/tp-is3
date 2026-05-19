@@ -17,7 +17,7 @@ La lógica principal se encuentra implementada en `JavaScript`. El procesamiento
 - Visualización de errores durante la carga del archivo. 
 - Redirección automática a la pantalla principal cuando no existen datos cargados para analizar. 
 
-Actualmente, el sistema implementa las siguientes funcionalidades:
+Actualmente, el sistema implementa las siguientes métricas:
 - Usuario con mayor cantidad de mensajes enviados. 
 - Emoji más utilizado dentro del chat. 
 
@@ -27,6 +27,8 @@ Además, el proyecto se encuentra preparado para incorporar nuevas estadísticas
 - Nube de palabras con las palabras más frecuentes. 
 
 Finalmente, la interfaz fue diseñada utilizando `CSS Flexbox` para organizar los elementos de forma adaptable y mantener una presentación clara de la información. Para complementar el diseño, se utilizaron `Bootstrap Icons`, mejorando la experiencia visual del usuario.
+
+---
 
 ## 👥 Integrantes
 
@@ -97,7 +99,9 @@ Para calcular el usuario con mayor cantidad de mensajes enviados se implementó 
 
 En el análisis de emojis se incorporó la librería `emoji-regex` importada desde `CDN`, ya que permite detectar emojis de forma más precisa que una expresión regular manual. También se normalizaron tonos de piel y variaciones visuales para evitar contabilizar un mismo emoji como elementos diferentes. 
 
-Por último, los resultados obtenidos se muestran dinámicamente en pantalla mediante la manipulación del contenido `HTML` utilizando `JavaScript`.
+Los resultados obtenidos se muestran dinámicamente en pantalla mediante la manipulación del contenido `HTML` utilizando `JavaScript`. 
+
+Por último, se realizaron pruebas unitarias con `Jest` para verificar el comportamiento de las funciones principales del sistema. Estas pruebas permitieron validar el conteo de mensajes por usuario, la detección del emoji más utilizado, el manejo de autores vacíos, los mensajes multilínea y la validación de fechas y formatos inválidos. También se realizaron pruebas directamente sobre la aplicación para comprobar el flujo completo de uso, incluyendo la carga de archivos con formato incorrecto, archivos `.txt` que no cumplen con el formato de WhatsApp y chats válidos con resultados esperados.
 
 ---
 
