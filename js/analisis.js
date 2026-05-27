@@ -93,3 +93,31 @@ async function emojiMasUsado(mensajes, { normalizeSkinTone = true } = {}) {
   }
   return top;
 }
+
+function franjaHorariaConMayorActividad(mensajes) {
+  const counts = new Map();
+
+  for (const mensaje of mensajes) {
+    const hora = mensaje.datetime.getHours();
+
+    const horaInicio = hora.toString().padStart(2, "0");
+    const horaFin = ((hora + 1) % 24).toString().padStart(2, "0");
+
+    const franja = `${horaInicio}:00 - ${horaFin}:00`;
+
+    counts.set(franja, (counts.get(franja) || 0) + 1);
+  }
+
+  let top = null;
+
+  for (const [franja, cantidad] of counts) {
+    if (!top || cantidad > top.count) {
+      top = {
+        range: franja,
+        count: cantidad,
+      };
+    }
+  }
+
+  return top;
+}
