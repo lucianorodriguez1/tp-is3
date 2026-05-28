@@ -14,7 +14,7 @@ function mostrarErrorFormato(mensaje) {
   sessionStorage.removeItem(CLAVE_ALMACENAMIENTO_CHAT);
 }
 
-function mostrarArchivoValido(archivo) {
+function mostrarArchivoValido(archivo, detalle = '') {
   infoArchivo.innerHTML = `
     <i class="bi bi-file-text" style="color: green;"></i>
     <div>
@@ -25,6 +25,7 @@ function mostrarArchivoValido(archivo) {
                 max-width: 100%;
                 font-size: 1rem;"
                 ><strong>${archivo.name}</strong></span>
+      ${detalle ? `<span style="display: block; font-size: 0.85em; color: gray;">${detalle}</span>` : ''}
       <span style="font-size: 0.8em; color: gray;">${(archivo.size / 1024).toFixed(1)} KB</span>
     </div>
   `;
@@ -174,13 +175,44 @@ function leerArchivoComoTexto(archivo) {
   });
 }
 
+async function leerPrimerTxtDesdeZip(archivo) {
+  if (typeof JSZip === 'undefined') {
+    throw new Error('No se pudo cargar el soporte para archivos ZIP.');
+  }
+
+  let zip;
+
+  try {
+    zip = await JSZip.loadAsync(archivo);
+  } catch (error) {
+    throw new Error('No se pudo leer el archivo ZIP.');
+  }
+
+  const entradaTxt = Object.values(zip.files).find(
+    (entrada) => !entrada.dir && entrada.name.toLowerCase().endsWith('.txt')
+  );
+
+  if (!entradaTxt) {
+    throw new Error('El archivo ZIP no contiene ningun .txt.');
+  }
+
+  return {
+    contenido: await entradaTxt.async('string'),
+    nombreInterno: entradaTxt.name,
+  };
+}
+
 async function procesarArchivo(archivo) {
   if (!archivo) {
     return;
   }
 
-  if (!archivo.name.toLowerCase().endsWith('.txt')) {
-    mostrarErrorFormato('Solo se aceptan archivos <strong>.txt</strong>');
+  const nombreArchivo = archivo.name.toLowerCase();
+  const esTxt = nombreArchivo.endsWith('.txt');
+  const esZip = nombreArchivo.endsWith('.zip');
+
+  if (!esTxt && !esZip) {
+    mostrarErrorFormato('Solo se aceptan archivos <strong>.txt</strong> o <strong>.zip</strong>.');
     return;
   }
 
@@ -190,12 +222,22 @@ async function procesarArchivo(archivo) {
   `;
 
   try {
-    const contenido = await leerArchivoComoTexto(archivo);
+    let contenido;
+    let detalleArchivo = '';
+
+    if (esZip) {
+      const resultadoZip = await leerPrimerTxtDesdeZip(archivo);
+      contenido = resultadoZip.contenido;
+      detalleArchivo = `TXT detectado: ${resultadoZip.nombreInterno}`;
+    } else {
+      contenido = await leerArchivoComoTexto(archivo);
+    }
+
     const mensajesParseados = parsearChatWhatsApp(contenido);
     sessionStorage.setItem(CLAVE_ALMACENAMIENTO_CHAT, JSON.stringify(mensajesParseados));
-    mostrarArchivoValido(archivo);
+    mostrarArchivoValido(archivo, detalleArchivo);
   } catch (error) {
-    mostrarErrorFormato('El archivo no tiene un formato valido de chat de WhatsApp.');
+    mostrarErrorFormato(error.message || 'El archivo no tiene un formato valido de chat de WhatsApp.');
   }
 }
 
