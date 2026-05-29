@@ -27,6 +27,11 @@ if (!chatGuardado) {
   document.getElementById("hourRange").innerHTML = `<i class="bi bi-alarm"></i> ${topHourRange.range}`;
   document.getElementById("hourMessages").innerHTML = `<i class="bi bi-chat-dots"></i> Mensajes enviados: ${topHourRange.count}`;
 
+  const topDay = diasConMayorCantidadDeMensajes(mensajes);
+  
+  document.getElementById("topDay").innerHTML = `<i class="bi bi-calendar-event"></i> ${topDay.day}`;
+  document.getElementById("topDayMessages").innerHTML = `<i class="bi bi-chat-dots"></i> Mensajes enviados: ${topDay.count}`;
+
   emojiMasUsado(mensajes).then((topEmoji) => {
     if (!topEmoji) {
       document.getElementById("emojiTotal").innerHTML = `<i class="bi bi-emoji-sunglasses"></i> No se encontraron emojis.`;
