@@ -22,6 +22,11 @@ if (!chatGuardado) {
   document.getElementById("personName").innerHTML =`<i class="bi bi-file-person"></i> ${topUser.author}`;
   document.getElementById("personMessages").innerHTML = `<i class="bi bi-chat-dots"></i> Mensajes enviados: ${topUser.count}`;
 
+  const topHourRange = franjaHorariaConMayorActividad(mensajes);
+  
+  document.getElementById("hourRange").innerHTML = `<i class="bi bi-alarm"></i> ${topHourRange.range}`;
+  document.getElementById("hourMessages").innerHTML = `<i class="bi bi-chat-dots"></i> Mensajes enviados: ${topHourRange.count}`;
+
   emojiMasUsado(mensajes).then((topEmoji) => {
     if (!topEmoji) {
       document.getElementById("emojiTotal").innerHTML = `<i class="bi bi-emoji-sunglasses"></i> No se encontraron emojis.`;
