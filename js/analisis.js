@@ -126,3 +126,31 @@ function franjaHorariaConMayorActividad(mensajes) {
 
   return top;
 }
+
+function diasConMayorCantidadDeMensajes(mensajes) {
+  const counts = new Map();
+
+  for (const mensaje of mensajes) {
+    const fecha = mensaje.datetime.toLocaleDateString("es-AR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    counts.set(fecha, (counts.get(fecha) || 0) + 1);
+  }
+
+  let top = null;
+
+  for (const [dia, cantidad] of counts) {
+    if (!top || cantidad > top.count) {
+      top = {
+        day: dia,
+        count: cantidad,
+      };
+    }
+  }
+
+  return top;
+}
