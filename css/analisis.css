@@ -32,6 +32,12 @@
     padding: 1rem;
     border-radius: 0.4rem;
     font-family: rockwell, serif;
+    min-width: 250px;
+}
+
+.sectionAnalysis--wordcloud{
+    width: min(100%, 52rem);
+    min-height: 30rem;
 }
 
 .sectionAnalysis p{
@@ -53,4 +59,34 @@
     margin-top: 0;
     border-radius: 0.5rem;
     
+}
+
+#wordCloud{
+    width: 100%;
+    height: 24rem;
+    margin-top: 0.5rem;
+    position: relative;
+    border-radius: 0.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #e9f4ec 100%);
+    border: 2px dashed #b8d3bf;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#wordCloud canvas{
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+}
+
+@media (max-width: 768px){
+    .sectionAnalysis--wordcloud{
+        width: 100%;
+        min-height: 26rem;
+    }
+
+    #wordCloud{
+        height: 20rem;
+    }
 }

@@ -41,6 +41,7 @@ if (!chatGuardado) {
       document.getElementById("emojiCount").innerHTML = `<i class="bi bi-123"></i> Veces usado: ${topEmoji.count}`;
     }
   });
+
 }
 
 /*
@@ -158,4 +159,38 @@ function diasConMayorCantidadDeMensajes(mensajes) {
   }
 
   return top;
+}
+
+function obtenerListaWordCloud(
+  mensajes,
+  { limite = 50, minimoLargo = 4 } = {}
+) {
+  const frecuencias = new Map();
+
+  for (const mensaje of mensajes) {
+    const palabras = normalizarTextoParaWordCloud(mensaje.text || "");
+
+    for (const palabra of palabras) {
+      if (palabra.length < minimoLargo) {
+        continue;
+      }
+      frecuencias.set(palabra, (frecuencias.get(palabra) || 0) + 1);
+    }
+  }
+
+  return [...frecuencias.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limite);
+}
+
+function normalizarTextoParaWordCloud(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/@\S+/g, " ")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .split(/\s+/)
+    .filter(Boolean);
 }
