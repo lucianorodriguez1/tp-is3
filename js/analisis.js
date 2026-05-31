@@ -42,6 +42,8 @@ if (!chatGuardado) {
     }
   });
 
+  inicializarWordCloud(obtenerListaWordCloud(mensajes));
+
 }
 
 /*
@@ -193,4 +195,43 @@ function normalizarTextoParaWordCloud(texto) {
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
     .split(/\s+/)
     .filter(Boolean);
+}
+
+function inicializarWordCloud(listaPalabras) {
+  const contenedor = document.getElementById("wordCloud");
+
+  if (!contenedor || typeof WordCloud !== "function") {
+    return;
+  }
+
+  const lista = listaPalabras || [];
+
+  if (lista.length === 0) return;
+
+  const maxFrecuencia = lista[0][1];
+
+  WordCloud(contenedor, {
+    list: lista,
+    gridSize: 16,
+    weightFactor: function(frecuencia){
+      const mintTam=12;
+      const maxTam=80;
+      return (frecuencia / maxFrecuencia) * (maxTam - mintTam) + mintTam;
+    },
+    drawOutOfBound: false,
+    shrinkToFit: true,
+    rotateRatio: 0.35,
+    backgroundColor: "transparent",
+    fontFamily: "'Segoe UI', rockwell, sans-serif",
+    fontWeight:"600",
+    color: function(word, weight){
+      const colores =[
+        "#4b865b",
+        "#2c5236", 
+        "#334139", 
+        "#6b7a70"
+      ];
+      return colores[Math.floor(Math.random() * colores.length)];
+    }
+  });
 }
