@@ -28,17 +28,7 @@ Además, el proyecto se encuentra preparado para incorporar nuevas estadísticas
 
 Finalmente, la interfaz fue diseñada utilizando `CSS Flexbox` para organizar los elementos de forma adaptable y mantener una presentación clara de la información. Para complementar el diseño, se utilizaron `Bootstrap Icons`, mejorando la experiencia visual del usuario.
 
----
-
-## 👥 Integrantes
-
-- Julián Castro
-- Juan Diez
-- Valentina Mohamed
-- Luciano Rodriguez 
-- Facundo Simonetta  
-
----
+--- 
 
 ## 🧠 Procesamiento del chat
 
@@ -55,16 +45,24 @@ El sistema:
 
 ---
 
+## 👥 Integrantes
+
+- Julián Castro (Desarrollador)
+- Juan Diez (Desarrollador)
+- Valentina Mohamed (Desarrollador) 
+- Luciano Rodriguez (Desarrollador) 
+- Facundo Simonetta (Tester)
+
+
+---
+
 ## ▶️ Cómo ejecutar el proyecto
 
 1. Clonar el repositorio:
 
 git clone <URL_DEL_REPO>
 
-2. Abrir el archivo `index.html` en cualquier navegador moderno
-
-No requiere instalación, servidor ni dependencias externas.
-
+2. Abrir el archivo `index.html`.
 ---
 
 ## 📚 Decisiones técnicas tomadas
@@ -86,6 +84,10 @@ En el análisis de emojis se incorporó la librería `emoji-regex` importada des
 Los resultados obtenidos se muestran dinámicamente en pantalla mediante la manipulación del contenido `HTML` utilizando `JavaScript`. 
 
 Por último, se realizaron pruebas unitarias con `Jest` para verificar el comportamiento de las funciones principales del sistema. Estas pruebas permitieron validar el conteo de mensajes por usuario, la detección del emoji más utilizado, el manejo de autores vacíos, los mensajes multilínea y la validación de fechas y formatos inválidos. También se realizaron pruebas directamente sobre la aplicación para comprobar el flujo completo de uso, incluyendo la carga de archivos con formato incorrecto, archivos `.txt` que no cumplen con el formato de WhatsApp y chats válidos con resultados esperados.
+
+Para ampliar el análisis temporal del grupo, se optó por aprovechar el objeto nativo `Date` de JavaScript para calcular la franja horaria y la fecha exacta con mayor actividad. Agrupar los resultados utilizando `toLocaleDateString` permitió obtener salidas legibles y estandarizadas de acuerdo a la región (es-AR), evitando depender de librerías externas de manejo de fechas (como Moment.js o Date-fns).
+
+En cuanto a la nube de palabras (Word Cloud), el mayor desafío técnico residía en la limpieza previa del texto. Se decidió implementar una cadena de normalización propia mediante expresiones regulares y el método `.normalize("NFD")` que se encarga de eliminar tildes, símbolos, enlaces y etiquetas. Se definió un umbral de longitud mínima (4 caracteres) que actúa como un filtro natural de "stop words" y caracteres irrelevantes, mejorando significativamente los resultados. La renderización visual de esta métrica fue delegada a la librería externa `WordCloud`, priorizando su escalado (`weightFactor`) con relación directa a la palabra de mayor frecuencia para garantizar coherencia en la nube construida.
 
 ---
 
