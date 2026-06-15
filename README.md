@@ -40,22 +40,6 @@ Finalmente, la interfaz fue diseñada utilizando `CSS Flexbox` para organizar lo
 
 ---
 
-## 🚀 Funcionalidades
-
-- 📂 Carga de archivo de chat exportado (.txt)
-- 📊 Procesamiento automático de mensajes
-- 📈 Visualización de estadísticas en un dashboard
-
-### 📊 Métricas implementadas
-
-- 👤 Usuario que más mensajes envió  
-- 😂 Emoji más utilizado  
-- ⏰ Franja horaria con mayor actividad  
-- 📅 Días con mayor cantidad de mensajes  
-- ☁️ Nube de palabras (Word Cloud)  
-
----
-
 ## 🧠 Procesamiento del chat
 
 El sistema:
