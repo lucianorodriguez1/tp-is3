@@ -28,22 +28,6 @@ Además, el proyecto se encuentra preparado para incorporar nuevas estadísticas
 
 Finalmente, la interfaz fue diseñada utilizando `CSS Flexbox` para organizar los elementos de forma adaptable y mantener una presentación clara de la información. Para complementar el diseño, se utilizaron `Bootstrap Icons`, mejorando la experiencia visual del usuario.
 
---- 
-
-## 🧠 Procesamiento del chat
-
-El sistema:
-
-1. Lee el archivo exportado de WhatsApp (.txt)
-2. Parsea cada línea para extraer:
-   - Fecha y hora
-   - Usuario
-   - Mensaje
-3. Limpia y normaliza los datos
-4. Calcula estadísticas agregadas
-5. Genera visualizaciones dinámicas en el navegador
-
----
 
 ## 👥 Integrantes
 
@@ -54,16 +38,15 @@ El sistema:
 - Facundo Simonetta (Tester)
 
 
----
-
 ## ▶️ Cómo ejecutar el proyecto
 
 1. Clonar el repositorio:
-
+```bash 
 git clone <URL_DEL_REPO>
+```
+
 
 2. Abrir el archivo `index.html`.
----
 
 ## 📚 Decisiones técnicas tomadas
 
@@ -89,7 +72,6 @@ Para ampliar el análisis temporal del grupo, se optó por aprovechar el objeto 
 
 En cuanto a la nube de palabras (Word Cloud), el mayor desafío técnico residía en la limpieza previa del texto. Se decidió implementar una cadena de normalización propia mediante expresiones regulares y el método `.normalize("NFD")` que se encarga de eliminar tildes, símbolos, enlaces y etiquetas. Se definió un umbral de longitud mínima (4 caracteres) que actúa como un filtro natural de "stop words" y caracteres irrelevantes, mejorando significativamente los resultados. La renderización visual de esta métrica fue delegada a la librería externa `WordCloud`, priorizando su escalado (`weightFactor`) con relación directa a la palabra de mayor frecuencia para garantizar coherencia en la nube construida.
 
----
 
 ## 🏗️ Arquitectura del Sistema
 
@@ -119,7 +101,6 @@ El sistema implementa una arquitectura **Frontend-only**, sin backend ni base de
   }
   ```
 
----
 
 ## 💻 Documentación del Código
 
