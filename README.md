@@ -20,8 +20,6 @@ La lógica principal se encuentra implementada en `JavaScript`. El procesamiento
 Actualmente, el sistema implementa las siguientes métricas:
 - Usuario con mayor cantidad de mensajes enviados. 
 - Emoji más utilizado dentro del chat. 
-
-Además, el proyecto se encuentra preparado para incorporar nuevas estadísticas y visualizaciones, como:
 - Franja horaria con mayor actividad. 
 - Días con mayor cantidad de mensajes. 
 - Nube de palabras con las palabras más frecuentes. 
